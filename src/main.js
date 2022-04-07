@@ -2,14 +2,17 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-import API from './api/api_base'
+import Vuex from 'vuex'
+import storeConfig from './store'
+Vue.use(Vuex)
+axios.defaults.baseURL = ("https://mvn-task-manager.work/")
+const store = new Vuex.Store(storeConfig)
 
-// import axios from 'axios'
 
-axios.default.baseURL = 'https://mvn-task-manager.work/' 
+// axios.create({
+//   baseURL : 'https://mvn-task-manager.work/'
+// })
 
-
-// axios.defaults.baseURL("https://mvn-task-manager.work/api/")
 
 
 
@@ -19,9 +22,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  axios ,
-  API ,
-  // base_url,
-  // store ,
+  store ,
+  // api_base,
   render: h => h(App)
 }).$mount('#app')
