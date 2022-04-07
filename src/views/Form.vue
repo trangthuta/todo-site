@@ -15,11 +15,11 @@
           <div class="todo-form">
             <div class="form-login" v-if="formShow === 'login'">
               <h2 class="form-title">Sign in</h2>
-              <form @submit.prevent="login()">
+              <form @submit.prevent="SubmitFormLogin()">
                 <div class="form-group">
                   <input
                     type="text"
-                    placeholder=" Your email"
+                    placeholder=" Your name"
                     id="your-name"
                     v-model="user.userName"
                     @blur="checkForm()"
@@ -43,6 +43,13 @@
                   </div>
                 </div>
                 <button id="button-login">Sign in</button>
+                <div
+                  class="feedback-invalid"
+                  v-if="msgError.errorMsg"
+                  style="text-align: center; margin-top: 10px"
+                >
+                  {{ msgError.errorMsg }}
+                </div>
               </form>
               <p class="register-link" @click="changeForm('register')">
                 Create new account
@@ -50,6 +57,49 @@
             </div>
 
             <div class="form-login" v-if="formShow === 'register'">
+              <h2 class="form-title">Sign up</h2>
+              <form @submit.prevent="SubmitFormRegister()">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder=" Your name"
+                    id="your-name-register"
+                    v-model="user.userName"
+                    @blur="checkForm()"
+                    v-bind:class="{ err: msgError.user }"
+                  />
+                  <div class="feedback-invalid" v-if="msgError.user">
+                    {{ msgError.user }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder=" Password"
+                    id="your-pw-register"
+                    v-model="user.passWord"
+                    @blur="checkForm()"
+                    v-bind:class="{ err: msgError.pass }"
+                  />
+                  <div class="feedback-invalid" v-if="msgError.pass">
+                    {{ msgError.pass }}
+                  </div>
+                </div>
+                <button id="button-login">Sign up</button>
+                <div
+                  class="feedback-invalid"
+                  v-if="msgError.errorMsg"
+                  style="text-align: center; margin-top: 10px"
+                >
+                  {{ msgError.errorMsg }}
+                </div>
+              </form>
+              <p class="register-link" @click="changeForm('login')">
+                Login with existing account
+              </p>
+            </div>
+
+            <!-- <div class="form-login" v-if="formShow === 'register'">
               <h2 class="form-title">Sign up</h2>
               <form @submit.prevent="registerForm()">
                 <div class="form-group">
@@ -86,33 +136,6 @@
               <p class="register-link" @click="changeForm('login')">
                 Login with existing account
               </p>
-            </div>
-
-            <!-- <div class="form-login" v-else-if="formShow === 'register'">
-              <h2 class="form-title">Sign up</h2>
-              <form @submit="registerForm()">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    placeholder=" Your name"
-                    id="your-name-register"
-                    v-model="register.user"
-                  />
-                  
-                </div>
-                <div class="form-group">
-                  <input
-                    type="text"
-                    placeholder=" Password"
-                    id="your-pw-register"
-                    v-model="register.password"
-                  />
-                </div>
-                <button id="button-register">Sign up</button>
-              </form>
-              <p class="register-link" @click="changeForm('login')">
-                Login with existing account
-              </p>
             </div> -->
           </div>
         </div>
@@ -122,8 +145,7 @@
 </template>
 
 <script>
-import axios from "axios"
-// import API from "../api/api_base"
+import { mapActions } from "vuex";
 
 export default {
   name: "Form",
@@ -137,36 +159,24 @@ export default {
       msgError: {
         user: "",
         pass: "",
-        userRegister : "",
-        passwordRegister : "",
-        register : ""
+        errorMsg: "",
       },
-      register : {
-        user : "",
-        password : ""
-      },
-      base_url : 'https://mvn-task-manager.work/'
     };
- 
   },
   methods: {
+    ...mapActions(["login", "registerForm"]),
     changeForm(string) {
-      this.formShow = string;
-       this.user= {
+      (this.user = {
         userName: "",
         passWord: "",
-      },
-       this.register = {
-        user : "",
-        password : ""
-      }
-
+      }),
+        (this.msgError = {
+          user: "",
+          pass: "",
+          errorMsg: "",
+        });
+      this.formShow = string;
     },
-    // validEmail: function (email) {
-    //   const re =
-    //     /^(([^<>()[\]\\.,:\s@"]+(\.[^<>()[\]\\.,:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //   return re.test(email);
-    // },
     validPassword: function (pass) {
       const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
       return re.test(pass);
@@ -176,18 +186,13 @@ export default {
       this.msgError = {
         user: "",
         pass: "",
-        userRegister : "",
-        passwordRegister : ""
+        errorMsg: "",
       };
 
       if (!this.user.userName) {
         this.msgError.user = "Không được để trống !!";
         isValid = false;
-      } 
-      // else if (!this.validEmail(this.user.userName)) {
-      //   this.msgError.user = "Sai định dạng Email !!";
-      //   isValid = false;
-      // }
+      }
       if (!this.user.passWord) {
         this.msgError.pass = "Không được để trống !!";
         isValid = false;
@@ -198,58 +203,34 @@ export default {
       }
       return isValid;
     },
-     checkFormRegister() {
-      let isValid = true;
-      this.msgError = {
-        user: "",
-        pass: "",
-        userRegister : "",
-        passwordRegister : ""
+    async SubmitFormRegister() {
+      const userData = {
+        username: this.user.userName,
+        password: this.user.passWord,
+      };
+      try {
+        if (this.checkForm()) {
+          await this.registerForm(userData);
+          this.changeForm("login");
+        }
+      } catch (error) {
+        this.msgError.errorMsg = "Tên đăng nhập đã tồn tại !";
+      }
+    },
+
+    async SubmitFormLogin() {
+      const userData = {
+        username: this.user.userName,
+        password: this.user.passWord,
       };
 
-      if (!this.register.user) {
-        this.msgError.userRegister = "Không được để trống !!";
-        isValid = false;
-      } 
-      // else if (!this.validEmail(this.user.userName)) {
-      //   this.msgError.user = "Sai định dạng Email !!";
-      //   isValid = false;
-      // }
-      if (!this.register.password) {
-        this.msgError.passwordRegister = "Không được để trống !!";
-        isValid = false;
-      } else if (!this.validPassword(this.register.password)) {
-        this.msgError.passwordRegister =
-          " Password từ 8 kí tự bao gồm chữ hoa, chữ thường và số!";
-        isValid = false;
-      }
-      return isValid;
-    },
-    async registerForm() {
-      if(this.checkFormRegister()){
-       const responsive =await axios.post(this.base_url+'auth/register' , {
-            username:  this.register.user ,
-            password : this.register.password
-        })
-        console.log(responsive.request.statusText)
-        this.formShow ='login'
-        alert("Đăng ký thành công !")
-        
-      }
-    }
-    ,
-     async login() {
-      if (this.checkForm()) {
-        const responsive =await axios.post(this.base_url+'auth/login' , {
-            username:  this.user.userName ,
-            password : this.user.passWord
-
-        })
-
-        // console.log(responsive.data.token )
-        // this.$router.push('/homepage')
-        localStorage.setItem('token' ,responsive.data.token)
-        localStorage.setItem('id' ,responsive.data.id)
+      try {
+        if (this.checkForm()) {
+          await this.login(userData);
+          this.$router.push("/homepage");
+        }
+      } catch (e) {
+        this.msgError.errorMsg = "Sai tên đăng nhập hoặc mật khẩu !";
       }
     },
   },
@@ -291,7 +272,7 @@ h2 {
   font-weight: 700;
   font-size: 36px;
   text-align: center;
-  color : #6dabe4;
+  color: #6dabe4;
 }
 
 .form-group {
