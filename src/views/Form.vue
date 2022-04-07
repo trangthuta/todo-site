@@ -98,45 +98,6 @@
                 Login with existing account
               </p>
             </div>
-
-            <!-- <div class="form-login" v-if="formShow === 'register'">
-              <h2 class="form-title">Sign up</h2>
-              <form @submit.prevent="registerForm()">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    placeholder=" Your name"
-                    id="your-name-register"
-                    v-model="register.user"
-                    @blur="checkFormRegister()"
-                    v-bind:class="{ err: msgError.userRegister }"
-                  />
-                  <div class="feedback-invalid" v-if="msgError.userRegister">
-                    {{ msgError.userRegister }}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <input
-                    type="text"
-                    placeholder=" Password"
-                    id="your-pw-register"
-                    v-model="register.password"
-                    @blur="checkFormRegister()"
-                    v-bind:class="{ err: msgError.passwordRegister }"
-                  />
-                  <div class="feedback-invalid" v-if="msgError.passwordRegister">
-                    {{ msgError.passwordRegister }}
-                  </div>
-                </div>
-                <button id="button-register">Sign up</button>
-                <div>
-                  {{msgError.register}}
-                </div>
-              </form>
-              <p class="register-link" @click="changeForm('login')">
-                Login with existing account
-              </p>
-            </div> -->
           </div>
         </div>
       </div>
@@ -161,6 +122,7 @@ export default {
         pass: "",
         errorMsg: "",
       },
+      mode : false
     };
   },
   methods: {
@@ -212,6 +174,7 @@ export default {
         if (this.checkForm()) {
           await this.registerForm(userData);
           this.changeForm("login");
+          alert("Đăng ký thành công!")
         }
       } catch (error) {
         this.msgError.errorMsg = "Tên đăng nhập đã tồn tại !";
@@ -228,6 +191,7 @@ export default {
         if (this.checkForm()) {
           await this.login(userData);
           this.$router.push("/homepage");
+          this.mode = true
         }
       } catch (e) {
         this.msgError.errorMsg = "Sai tên đăng nhập hoặc mật khẩu !";

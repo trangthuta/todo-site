@@ -22,4 +22,24 @@ export default {
     });
     console.log(response);
   },
+logout({commit}) {
+  localStorage.removeItem('token'),
+  localStorage.removeItem('id')
+  commit('setUser',{
+    token: null ,
+    id : null
+  })
+} ,
+tryLogin({
+  commit
+}) {
+  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('id');
+  if (token && userId) {
+      commit('setUser', {
+          token: token,
+          id: userId
+      });
+  }
+},
 };
