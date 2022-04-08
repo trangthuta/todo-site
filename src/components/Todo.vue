@@ -66,10 +66,6 @@ export default {
 .todo-tit {
   color:#6dabe4;
   text-align: center;
-   -webkit-text-decoration: #d06896 solid underline;
-  text-decoration: 1px #d06896 solid underline;
-  -webkit-text-underline-position: under;
-  text-underline-position: under;
   font-size: 16px;
 }
 .todo-content {
