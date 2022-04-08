@@ -42,4 +42,32 @@ tryLogin({
       });
   }
 },
+
+////todos
+ async getApiTodos({commit} ){
+ const todos = await axios.get('/api/tasks', {
+   params : {
+     page : 1 ,
+     limit : 10
+   }
+ })
+ const dataResponse = todos.data.items 
+ const todosData = [];
+ for (const data of dataResponse) {
+  todosData.push({
+         id: data.id,
+         content: data.content,
+         status: data.status,
+         createdAt: data.created_at
+     });
+ }
+ commit('setTodos',  {
+   todos :todosData
+ });
+
+
+ commit('setTodos' ,{
+   todos : todos.data.items
+ })
+ }
 };

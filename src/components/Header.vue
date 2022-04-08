@@ -5,8 +5,8 @@
         <h1>
           Todo<span class="logo-before" style="color: #d06896">Site</span>
         </h1>
-        <p class="button-log-out"  v-if="!isLoggedIn"> </p>
-        <p class="button-log-out" v-else @click="logOutEvent()">
+        <!-- <p class="button-log-out"  v-if="!isLoggedIn"> </p> -->
+        <p class="button-log-out" v-if="isLoggedIn"  @click="logOutEvent()">
           Logout
           <span>
             <i class="fa-solid fa-right-from-bracket"></i>

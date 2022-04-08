@@ -190,7 +190,7 @@ export default {
       try {
         if (this.checkForm()) {
           await this.login(userData);
-          this.$router.push("/homepage");
+          this.$router.replace("/homepage");
           this.mode = true
         }
       } catch (e) {
