@@ -5,9 +5,10 @@
         <h1>
           Todo<span class="logo-before" style="color: #d06896">Site</span>
         </h1>
-        <!-- <p class="button-log-out"  v-if="!isLoggedIn"> </p> -->
+
         <p class="button-log-out" v-if="isLoggedIn"  @click="logOutEvent()">
-          Logout
+          <span class="wellcome-user"> Hi , {{this.getUsername}} <i class="fa-solid fa-user"></i></span>Logout
+
           <span>
             <i class="fa-solid fa-right-from-bracket"></i>
           </span>
@@ -23,7 +24,7 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "headerTodo",
   computed: {
-     ...mapGetters(['isLoggedIn']) ,
+     ...mapGetters(['isLoggedIn','getUsername']) ,
   },
    methods: {
     ...mapActions(["logout"]),
@@ -52,5 +53,10 @@ h1 {
 }
 .button-log-out {
   cursor: pointer;
+}
+.wellcome-user {
+   border-right:  2px solid #d06896;
+   margin-right : 10px;
+   padding-right : 10px
 }
 </style>

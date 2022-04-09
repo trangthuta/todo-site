@@ -32,6 +32,9 @@
         >
       </div>
       <div class="todo-list">
+        <p class="message" v-if="todosData.length == 0">
+          Nothing to do ...🤷‍♀️
+        </p>
         <Todo :todosData="todosData" />
       </div>
     </div>
@@ -56,11 +59,10 @@ export default {
   },
   methods: {
     ...mapActions(["getApiTodos" ,"addTodo"]),
-    showTodos() {
-      // this.getApiTodos();
-      // this.todosData = this.todos;
-      // console.log(this.todosData);
+   async showTodos() {
       this.active = "all";
+      await this.getApiTodos()
+      this.todosData = this.getTodos
     },
     todosActive() {
       this.todosData = this.isActive
@@ -71,21 +73,26 @@ export default {
       this.active = "completed"
     },
     add() {
-       this.addTodo(this.todo)
+      const todo = this.todo
+      if(todo){
+        this.addTodo(this.todo)
        this.showTodos()
        this.todo = ''
+      }
+     
     }
   },
   computed: {
     ...mapState(["todos"]),
-    ...mapGetters(["isActive",'isCompleted']),
+    ...mapGetters(["isActive",'isCompleted' ,"getTodos"]),
     
   },
-  async created() {
-    await this.getApiTodos()
-      this.todosData = this.todos
-      console.log(this.todosData);
-      this.active = "all";
+  async mounted() {
+    this.showTodos()
+    // await this.getApiTodos()
+    // this.active = 'all'
+    // this.todosData = this.getTodos
+
   },
 };
 </script>
@@ -96,10 +103,11 @@ export default {
   text-align: center;
   padding: 60px 0;
   background-color: rgba(208, 104, 150, 0.1);
+  color :#d06896 ;
 }
 .add-todo {
   border: none;
-  background-color: #d06896;
+  background-color: #6dabe4;
   padding: 5px;
   color: white;
   cursor: pointer;
@@ -117,7 +125,7 @@ export default {
 }
 .todo-list {
   margin: 50px 0;
-  min-height: 300px;
+  /* min-height: 300px; */
 }
 .add-todo-field {
   border: 1px solid #6dabe4;
@@ -130,5 +138,10 @@ export default {
 .box-color {
   padding: 3px;
   border: solid 1px #d06896;
+}
+.message {
+  color : #6dabe4 ;
+  text-align: center;
+  padding : 50px 0
 }
 </style>

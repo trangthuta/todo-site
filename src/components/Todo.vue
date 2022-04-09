@@ -39,8 +39,8 @@ export default {
   justify-content: flex-start;
 }
 .todo-item {
-  margin: 10px 30px;
-  width: calc(25% - 60px);
+  margin: 20px 40px;
+  width: calc(25% - 80px);
   /* box-shadow: 5px 5px 5px #6dabe4; */
   border-top: 6px solid #6dabe4 !important;
   border: 1px solid #6dabe4;
@@ -48,9 +48,13 @@ export default {
   padding: 10px 15px;
 }
 .todo-item:hover {
-   transform: scale(1.2);
-   /* transition-duration: 2s; */
+   transform: scale(1.1);
+   border-top: 6px solid red !important;
+   border: 1px solid red;
    transition: all 1s;
+}
+.todo-item:hover .todo-tit {
+  color:#d06896
 }
 .todo-tit {
   color:#6dabe4;
