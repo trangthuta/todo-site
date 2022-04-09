@@ -2,42 +2,91 @@
   <div>
     <div class="title">
       <p>Todo List</p>
-      <button class="add-todo">+ Add Todo</button>
+      <input
+        type="text"
+        placeholder="Enter todo..."
+        class="add-todo-field"
+        v-model="todo"
+      />
+      <button class="add-todo" @click="add()">+ Add Todo</button>
     </div>
     <div class="container">
-      <p>0 todos left</p>
+      <p>{{this.isActive.length}} todos left</p>
       <div class="todo-menu">
-        <span> All </span>
-        <span class="menu-item"> Active </span>
-        <span> Completed</span>
+        <span
+          @click="showTodos()"
+          v-bind:class="{ 'box-color': active == 'all' }"
+        >
+          All
+        </span>
+        <span
+          class="menu-item"
+          v-bind:class="{ 'box-color': active == 'active' }"
+          @click="todosActive()"
+        >
+          Active
+        </span>
+        <span v-bind:class="{ 'box-color': active == 'completed' }"
+        @click="todoCompleted()">
+          Completed</span
+        >
       </div>
       <div class="todo-list">
-        <Todo> </Todo>
+        <Todo :todosData="todosData" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState  ,mapGetters} from "vuex";
 import Todo from "../components/Todo.vue";
 
 export default {
   name: "HomePage",
+  data() {
+    return {
+      todo: "",
+      todosData: [],
+      active: "",
+    };
+  },
   components: {
     Todo,
   },
   methods: {
-    ...mapActions(['getApiTodos']),
-
-  },computed :{
-  ...mapState(['todos']),
+    ...mapActions(["getApiTodos" ,"addTodo"]),
+    showTodos() {
+      // this.getApiTodos();
+      // this.todosData = this.todos;
+      // console.log(this.todosData);
+      this.active = "all";
+    },
+    todosActive() {
+      this.todosData = this.isActive
+      this.active = 'active'
+    },
+    todoCompleted() {
+      this.todosData = this.isCompleted
+      this.active = "completed"
+    },
+    add() {
+       this.addTodo(this.todo)
+       this.showTodos()
+       this.todo = ''
+    }
   },
-   async mounted() {
-     await this.getApiTodos()
-     console.log(this.todos[0])
-  }
-
+  computed: {
+    ...mapState(["todos"]),
+    ...mapGetters(["isActive",'isCompleted']),
+    
+  },
+  async created() {
+    await this.getApiTodos()
+      this.todosData = this.todos
+      console.log(this.todosData);
+      this.active = "all";
+  },
 };
 </script>
 
@@ -68,5 +117,18 @@ export default {
 }
 .todo-list {
   margin: 50px 0;
+  min-height: 300px;
+}
+.add-todo-field {
+  border: 1px solid #6dabe4;
+  padding: 10px;
+  outline: none;
+  /* background-color : #6dabe4; */
+  border-radius: 20px;
+  margin-right: 10px;
+}
+.box-color {
+  padding: 3px;
+  border: solid 1px #d06896;
 }
 </style>

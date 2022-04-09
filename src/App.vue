@@ -2,14 +2,17 @@
   <div id="app">
     <headerTodo />
     <router-view />
+    <footerPage/>
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex';
 import headerTodo from './components/Header'
+import footerPage from './components/Footer.vue'
 export default {
   components : {
     headerTodo,
+    footerPage
   },
   methods :{
  ...mapActions(['tryLogin'])

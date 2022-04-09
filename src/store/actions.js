@@ -1,6 +1,5 @@
 import axios from "axios";
 export default {
-
   async login({ commit }, payload) {
     const response = await axios.post("/auth/login", {
       username: payload.username,
@@ -9,6 +8,7 @@ export default {
     const data = response.data;
     localStorage.setItem("token", data.token);
     localStorage.setItem("id", data.id);
+    localStorage.setItem("username", data.username);
     commit("setUser", {
       token: data.token,
       id: data.id,
@@ -22,52 +22,62 @@ export default {
     });
     console.log(response);
   },
-logout({commit}) {
-  localStorage.removeItem('token'),
-  localStorage.removeItem('id')
-  commit('setUser',{
-    token: null ,
-    id : null
-  })
-} ,
-tryLogin({
-  commit
-}) {
-  const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('id');
-  if (token && userId) {
-      commit('setUser', {
-          token: token,
-          id: userId
+  logout({ commit }) {
+    localStorage.removeItem("token"), localStorage.removeItem("id");
+    commit("setUser", {
+      token: null,
+      id: null,
+    });
+  },
+  tryLogin({ commit }) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("id");
+    if (token && userId) {
+      commit("setUser", {
+        token: token,
+        id: userId,
       });
+    }
+  },
+
+  ////todos
+  async getApiTodos({ commit }) {
+    const response = await axios.get("/api/tasks", {
+      params: {
+        page: 1,
+        limit: 100,
+      },
+    });
+    let todosResponse = response.data.items;
+    
+    let todoArrays = [];
+    for (let i = 0; i <= todosResponse.length - 1; i++) {
+      let newObject = {
+        createdAt:todosResponse[i].createdAt ,
+        id: todosResponse[i].id,
+        title: todosResponse[i].title,
+        status: todosResponse[i].status,
+      }
+      todoArrays.push(newObject)
+    }
+    commit("setTodos", {
+      todos : todoArrays
+    });
+  },
+  async addTodo({commit} ,payload) {
+    const data = await axios.post('/api/tasks' ,{
+      title : payload
+    })
+    console.log(data.data.items)
+    commit('setTodo',data.data.items)
   }
-},
 
-////todos
- async getApiTodos({commit} ){
- const todos = await axios.get('/api/tasks', {
-   params : {
-     page : 1 ,
-     limit : 10
-   }
- })
- const dataResponse = todos.data.items 
- const todosData = [];
- for (const data of dataResponse) {
-  todosData.push({
-         id: data.id,
-         content: data.content,
-         status: data.status,
-         createdAt: data.created_at
-     });
- }
- commit('setTodos',  {
-   todos :todosData
- });
+  // updateTodo({commit} , payload) {
+  //   const  data = await axios.patch(`/api/tasks/${payload.id}`,{
+    
+  //   })
 
-
- commit('setTodos' ,{
-   todos : todos.data.items
- })
- }
+  // }
 };
+
+
