@@ -25,11 +25,17 @@ export default {
     console.log(response);
   },
   logout({ commit }) {
-    localStorage.removeItem("token"), localStorage.removeItem("id");
+    localStorage.removeItem("token")
+    localStorage.removeItem("id")
+    localStorage.removeItem("username")
+    commit('setTodos' , {
+      todos : []
+    })
     commit("setUser", {
       token: null,
       id: null,
-    });
+      username : null,
+    })
   },
   tryLogin({ commit }) {
     const token = localStorage.getItem("token");
@@ -75,14 +81,19 @@ export default {
     })
     console.log(data.data.items)
     commit('setTodo',data.data.items)
+  } ,
+
+  async updateTodo({commit} , payload) {
+    const  data = await axios.patch(`/api/tasks/${payload.id}`,{
+     title : payload.title,
+     status : payload.status,
+    })
+    commit('setTodo',data.data.items)
+  },
+  async deteleTodo({commit} , payload) {
+    const  data = await axios.delete(`/api/tasks/${payload.id}`)
+    commit('setTodo',data.data.items)
   }
-
-  // updateTodo({commit} , payload) {
-  //   const  data = await axios.patch(`/api/tasks/${payload.id}`,{
-    
-  //   })
-
-  // }
 };
 
 

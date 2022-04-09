@@ -33,7 +33,7 @@
       </div>
       <div class="todo-list">
         <p class="message" v-if="todosData.length == 0">
-          Nothing to do ...🤷‍♀️
+          Nothing ...🤷‍♀️
         </p>
         <Todo :todosData="todosData" />
       </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapActions, mapState  ,mapGetters} from "vuex";
+import { mapActions  ,mapGetters} from "vuex";
 import Todo from "../components/Todo.vue";
 
 export default {
@@ -83,17 +83,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(["todos"]),
+
     ...mapGetters(["isActive",'isCompleted' ,"getTodos"]),
     
   },
-  async mounted() {
-    this.showTodos()
-    // await this.getApiTodos()
-    // this.active = 'all'
-    // this.todosData = this.getTodos
+  // async created() {
+  //   // this.showTodos()
+  //   await this.getApiTodos()
+  //   this.active = 'all'
+  //   this.todosData = this.getTodos
 
-  },
+  // },
 };
 </script>
 

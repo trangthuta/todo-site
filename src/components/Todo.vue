@@ -3,14 +3,14 @@
     <div class="todo-wrap">
 
         <div class="todo-item" v-for="todo in todosData" :key="todo.id">
-        <p class="todo-tit">{{todo.createdAt}}</p>
+        <p class="todo-tit">{{formatTime(todo.createdAt)}}</p>
         <div class="todo-content">
           {{todo.title}}
         </div>
         <div class="todo-icon">
           <input type="checkbox" class="item-icon">
-          <i class="fa-solid fa-pen-to-square item-icon"></i>
-          <i class="fa-solid fa-trash item-icon"></i>
+          <i class="fa-solid fa-pen-to-square item-icon" @click="update(todo)" ></i>
+          <i class="fa-solid fa-trash item-icon" @click="deteleTodo(todo.id)"></i>
         </div>
       </div>
 
@@ -23,12 +23,34 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: "Todo",
   props :{
   todosData :[] ,
   },
-  
+  methods : {
+    ...mapActions(['updateTodo','deteleTodo']),
+    formatTime(e) {
+      const date =new Date(e).toLocaleDateString('vi-VI')
+      const time =new Date(e).toLocaleTimeString('vi-VI')
+      return `${date} - ${time}`
+    }
+    ,
+    async update() {
+      // const payload  = {
+      //   id : id.id,
+      //   status : id.status,
+      //   title : id.title
+      // }
+      // await this.updateTodo(payload)
+      // console.log(payload)
+    },
+    // async delete(e) {
+    //    this.deteleTodo(e)
+    // }
+  }
+
 }
 </script>
 
