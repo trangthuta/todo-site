@@ -2,12 +2,10 @@
   <div class="todo-child container">
     <div class="todo-wrap">
 
-        <div class="todo-item">
-        <p class="todo-tit">Ngày 16-02-2022</p>
+        <div class="todo-item" v-for="todo in todosData" :key="todo.id">
+        <p class="todo-tit">{{todo.createdAt}}</p>
         <div class="todo-content">
-          Học ReactJs
-          <br>
-          Học ReactJs
+          {{todo.title}}
         </div>
         <div class="todo-icon">
           <input type="checkbox" class="item-icon">
@@ -16,19 +14,6 @@
         </div>
       </div>
 
-              <div class="todo-item">
-        <p class="todo-tit">Ngày 16-02-2022</p>
-        <div class="todo-content">
-          Học ReactJs
-          <br>
-          Học ReactJs
-        </div>
-        <div class="todo-icon">
-          <input type="checkbox" class="item-icon">
-          <i class="fa-solid fa-pen-to-square item-icon"></i>
-          <i class="fa-solid fa-trash item-icon"></i>
-        </div>
-      </div>
 
 
 
@@ -40,7 +25,11 @@
 <script>
 export default {
   name: "Todo",
-};
+  props :{
+  todosData :[] ,
+  },
+  
+}
 </script>
 
 <style scoped>

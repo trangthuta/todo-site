@@ -4,6 +4,6 @@ export default {
       state.userId = payload.id;
   },
   setTodos(state,payload) {
-    state.todos = payload
+    state.todos = payload.todos
   }
 };
