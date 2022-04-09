@@ -1,6 +1,6 @@
 <template>
   <footer class="container">
-    <i>Made by Trang ❤</i>
+    <i>Made by Trang ❤</i> 
   </footer>
 </template>
 
@@ -15,7 +15,8 @@ name : 'footerPage'
   text-align: center;
   color :#d06896 ;
   font-size: 12px;
-  padding : 20px 0
+  padding : 20px 0;
+  letter-spacing: 2px;
 }
 
 </style>

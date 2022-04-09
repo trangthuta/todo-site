@@ -12,7 +12,9 @@ export default {
     commit("setUser", {
       token: data.token,
       id: data.id,
+      username : data.username,
     });
+    
   },
 
   async registerForm(store, payload) {
@@ -32,15 +34,18 @@ export default {
   tryLogin({ commit }) {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
+    const username = localStorage.getItem("username");
+
     if (token && userId) {
       commit("setUser", {
         token: token,
         id: userId,
+        username: username,
+
       });
     }
   },
-
-  ////todos
+  //todos
   async getApiTodos({ commit }) {
     const response = await axios.get("/api/tasks", {
       params: {
