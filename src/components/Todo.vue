@@ -1,24 +1,17 @@
 <template>
-  <div class="todo-child container">
-    <div class="todo-wrap">
-
-        <div class="todo-item" v-for="todo in todosData" :key="todo.id">
-        <p class="todo-tit">{{formatTime(todo.createdAt)}}</p>
-        <div class="todo-content">
+  <div class="container">
+        <div class="todo-item">
+        <div class="todo-content" v-bind="textContent" >
           {{todo.title}}
         </div>
+        <p class="todo-tit">{{formatTime(todo.createdAt)}}</p>
         <div class="todo-icon">
-          <input type="checkbox" class="item-icon">
+          <!-- <p class="item-icon box-check" @click ='updateStatusCompleted(todo)'></p> -->
+          <input type="checkbox" class="item-icon" @click ='updateStatusCompleted(todo)'>
           <i class="fa-solid fa-pen-to-square item-icon" @click="update(todo)" ></i>
-          <i class="fa-solid fa-trash item-icon" @click="deteleTodo(todo.id)"></i>
+          <i class="fa-solid fa-trash item-icon" @click="deleteChildTodo(todo)"></i>
         </div>
       </div>
-
-
-
-
-
-    </div>
   </div>
 </template>
 
@@ -26,68 +19,73 @@
 import { mapActions } from 'vuex'
 export default {
   name: "Todo",
-  props :{
-  todosData :[] ,
+  props: ['todo'],
+  data() {
+ return {
+   textContent : ''
+ }
   },
   methods : {
-    ...mapActions(['updateTodo','deteleTodo']),
+    ...mapActions(['updateTodo']),
     formatTime(e) {
       const date =new Date(e).toLocaleDateString('vi-VI')
       const time =new Date(e).toLocaleTimeString('vi-VI')
       return `${date} - ${time}`
-    }
-    ,
-    async update() {
-      // const payload  = {
-      //   id : id.id,
-      //   status : id.status,
-      //   title : id.title
-      // }
-      // await this.updateTodo(payload)
-      // console.log(payload)
     },
-    // async delete(e) {
-    //    this.deteleTodo(e)
-    // }
+    deleteChildTodo(e) {
+      this.$emit('delete-todo-child', e)
+    },
+    updateStatusCompleted(e) {
+      this.$emit('update-status-completed ', e)
+      alert('vừa check!')
+    }
+ 
+     
   }
 
 }
 </script>
 
 <style scoped>
-.todo-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+.box-check {
+  width : 15px;
+  height: 15px;
+  border: 1px solid #d06896;
+  display: inline-block;
 }
 .todo-item {
+  float: left;
   margin: 20px 40px;
   width: calc(25% - 80px);
-  /* box-shadow: 5px 5px 5px #6dabe4; */
-  border-top: 6px solid #6dabe4 !important;
-  border: 1px solid #6dabe4;
+  border: 2px solid #6dabe4;
   border-radius: 20px;
   padding: 10px 15px;
 }
-.todo-item:hover {
+/* .todo-item:hover {
    transform: scale(1.1);
-   border-top: 6px solid red !important;
    border: 1px solid red;
    transition: all 1s;
 }
-.todo-item:hover .todo-tit {
-  color:#d06896
+.todo-item:hover .todo-content {
+  border-color :red
 }
+.todo-item:hover .todo-icon {
+  color:red
+} */
 .todo-tit {
-  color:#6dabe4;
-  text-align: center;
-  font-size: 16px;
+  color:#d06896;
+  text-align: right;
+  font-size: 12px;
+  font-style: italic
 }
 .todo-content {
   text-align: justify;
-  min-height: 100px ;
-  margin: 10px 0 ;
+  min-height: 130px ;
+  margin: 5px 0 ;
   font-size: 14px;
+  border : 1px solid #6dabe4 ;
+  border-radius: 10px;
+  padding : 5px ;
 }
 .todo-icon {
   float: right;

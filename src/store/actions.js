@@ -47,7 +47,6 @@ export default {
         token: token,
         id: userId,
         username: username,
-
       });
     }
   },
@@ -56,7 +55,7 @@ export default {
     const response = await axios.get("/api/tasks", {
       params: {
         page: 1,
-        limit: 100,
+        limit: 1000000,
       },
     });
     let todosResponse = response.data.items;
@@ -90,8 +89,14 @@ export default {
     })
     commit('setTodo',data.data.items)
   },
-  async deteleTodo({commit} , payload) {
+  async deleTodo({commit} , payload) {
     const  data = await axios.delete(`/api/tasks/${payload.id}`)
+    commit('setTodo',data.data.items)
+  } ,
+  async updateTodoCompleted({commit} , payload) {
+    const  data = await axios.put(`/api/tasks/${payload.id}` , {
+      status : 'COMPLETED',
+    })
     commit('setTodo',data.data.items)
   }
 };

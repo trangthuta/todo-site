@@ -4,38 +4,51 @@
       <p>Todo List</p>
       <input
         type="text"
-        placeholder="Enter todo..."
+        placeholder="Enter new todo..."
         class="add-todo-field"
         v-model="todo"
+        @keypress.enter="add()"
       />
       <button class="add-todo" @click="add()">+ Add Todo</button>
     </div>
     <div class="container">
-      <p>{{this.isActive.length}} todos left</p>
+      <!-- <p>{{this.isActive.length}} todos left</p> -->
       <div class="todo-menu">
         <span
           @click="showTodos()"
           v-bind:class="{ 'box-color': active == 'all' }"
         >
-          All
+          All ({{getTodos.length}})
         </span>
         <span
           class="menu-item"
           v-bind:class="{ 'box-color': active == 'active' }"
           @click="todosActive()"
         >
-          Active
+          Active ({{isActive.length}})
         </span>
         <span v-bind:class="{ 'box-color': active == 'completed' }"
         @click="todoCompleted()">
-          Completed</span
+          Completed ({{isCompleted.length}})</span
         >
       </div>
       <div class="todo-list">
         <p class="message" v-if="todosData.length == 0">
           Nothing ...🤷‍♀️
         </p>
-        <Todo :todosData="todosData" />
+        <!-- <Todo :todosData="todosData" /> -->
+        <div class="todo-wrap">
+          <Todo
+           v-for="todo in this.todosData"
+            :todo="todo"
+            :key="todo.id"
+            @delete-todo-child ="deleteTodoChild"
+            @update-status-completed ="updateStatusCompleted"
+
+            />
+        </div>
+        
+
       </div>
     </div>
   </div>
@@ -51,14 +64,14 @@ export default {
     return {
       todo: "",
       todosData: [],
-      active: "",
+      active: "login",
     };
   },
   components: {
     Todo,
   },
   methods: {
-    ...mapActions(["getApiTodos" ,"addTodo"]),
+    ...mapActions(["getApiTodos" ,"addTodo" ,'deleTodo', 'updateTodoCompleted']),
    async showTodos() {
       this.active = "all";
       await this.getApiTodos()
@@ -73,27 +86,41 @@ export default {
       this.active = "completed"
     },
     add() {
-      const todo = this.todo
+      const todo = this.todo.trim()
       if(todo){
-        this.addTodo(this.todo)
+       this.addTodo(this.todo)
        this.showTodos()
        this.todo = ''
       }
-     
-    }
+    },
+       deleteTodoChild(e) {
+        console.log(e)
+        this.deleTodo(e)
+        this.showTodos()
+       
+      },
+      //   updateTodoChild(e) {
+      //   this.updateTodo(e)
+      //   this.showTodos()
+       
+      // },
+      updateStatusCompleted(e) {
+        this.updateTodoCompleted(e)
+        this.showTodos()
+      }
   },
   computed: {
 
     ...mapGetters(["isActive",'isCompleted' ,"getTodos"]),
     
   },
-  // async created() {
-  //   // this.showTodos()
-  //   await this.getApiTodos()
-  //   this.active = 'all'
-  //   this.todosData = this.getTodos
-
-  // },
+  async created() {
+     await this.showTodos()
+    //  location.reload()
+  },
+  // beforeDestroy () {
+  //   this.todosData =[]
+  // }
 };
 </script>
 
@@ -115,6 +142,7 @@ export default {
 .todo-menu {
   color: #d06896;
   text-align: center;
+  margin:30px 0px
 }
 .menu-item {
   margin: 0 5px;
@@ -122,10 +150,6 @@ export default {
 .todo-menu > span {
   padding: 5px;
   cursor: pointer;
-}
-.todo-list {
-  margin: 50px 0;
-  /* min-height: 300px; */
 }
 .add-todo-field {
   border: 1px solid #6dabe4;
@@ -137,7 +161,7 @@ export default {
 }
 .box-color {
   padding: 3px;
-  border: solid 1px #d06896;
+  border-bottom : 3px solid #d06896;
 }
 .message {
   color : #6dabe4 ;
