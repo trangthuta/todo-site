@@ -2,17 +2,17 @@
   <div id="app">
     <headerTodo />
     <router-view />
-    <footerPage/>
+    <!-- <footerPage class="footer-config"/> -->
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex';
 import headerTodo from './components/Header'
-import footerPage from './components/Footer.vue'
+// import footerPage from './components/Footer.vue'
 export default {
   components : {
     headerTodo,
-    footerPage
+    // footerPage
   },
   methods :{
  ...mapActions(['tryLogin'])
@@ -35,6 +35,10 @@ font-family: 'Poppins', sans-serif;
   max-width: 1200px;
   padding: 0 15px;
   margin: 0 auto;
+}
+.footer-config {
+   position: relative;
+   margin-top : 100vh
 }
 
 </style>

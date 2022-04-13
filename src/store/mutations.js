@@ -6,5 +6,11 @@ export default {
   },
   setTodos(state,payload) {
     state.todos = payload.todos
-  }
+  },
+  addTodos(state, payload) {
+    state.todos.unshift(payload);
+},
+ deleteTodo(state, id) {
+  state.todos = state.todos.filter(t => t.id !== id);
+}
 };

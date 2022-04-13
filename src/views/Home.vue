@@ -12,7 +12,6 @@
       <button class="add-todo" @click="add()">+ Add Todo</button>
     </div>
     <div class="container">
-      <!-- <p>{{this.isActive.length}} todos left</p> -->
       <div class="todo-menu">
         <span
           @click="showTodos()"
@@ -27,35 +26,28 @@
         >
           Active ({{isActive.length}})
         </span>
-        <span v-bind:class="{ 'box-color': active == 'completed' }"
-        @click="todoCompleted()">
-          Completed ({{isCompleted.length}})</span
+        <span
+          v-bind:class="{ 'box-color': active == 'completed' }"
+          @click="todoCompleted()"
         >
+          Completed ({{isCompleted.length}})</span>
       </div>
       <div class="todo-list">
-        <p class="message" v-if="todosData.length == 0">
-          Nothing ...🤷‍♀️
-        </p>
-        <!-- <Todo :todosData="todosData" /> -->
+        <p class="message" v-if="getTodos.length == 0">Nothing ...🤷‍♀️</p>
         <div class="todo-wrap">
           <Todo
-           v-for="todo in this.todosData"
+            v-for="todo in showTodosFilter"
             :todo="todo"
             :key="todo.id"
-            @delete-todo-child ="deleteTodoChild"
-            @update-status-completed ="updateStatusCompleted"
-
-            />
+          />
         </div>
-        
-
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions  ,mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Todo from "../components/Todo.vue";
 
 export default {
@@ -63,64 +55,52 @@ export default {
   data() {
     return {
       todo: "",
-      todosData: [],
-      active: "login",
+      active: "all",
     };
   },
   components: {
     Todo,
   },
   methods: {
-    ...mapActions(["getApiTodos" ,"addTodo" ,'deleTodo', 'updateTodoCompleted']),
-   async showTodos() {
+    ...mapActions([
+      "getApiTodos",
+      "addTodo"
+    ]),
+
+    showTodos() {
       this.active = "all";
-      await this.getApiTodos()
-      this.todosData = this.getTodos
     },
     todosActive() {
-      this.todosData = this.isActive
-      this.active = 'active'
+      this.active = "active";
     },
     todoCompleted() {
-      this.todosData = this.isCompleted
-      this.active = "completed"
+      this.active = "completed";
     },
+
     add() {
-      const todo = this.todo.trim()
-      if(todo){
-       this.addTodo(this.todo)
-       this.showTodos()
-       this.todo = ''
+      const todo = this.todo.trim();
+      if (todo) {
+        this.addTodo(this.todo)
+        this.todo = "";
       }
     },
-       deleteTodoChild(e) {
-        console.log(e)
-        this.deleTodo(e)
-        this.showTodos()
-       
-      },
-      //   updateTodoChild(e) {
-      //   this.updateTodo(e)
-      //   this.showTodos()
-       
-      // },
-      updateStatusCompleted(e) {
-        this.updateTodoCompleted(e)
-        this.showTodos()
-      }
   },
   computed: {
-
-    ...mapGetters(["isActive",'isCompleted' ,"getTodos"]),
-    
+    ...mapGetters(["isActive", "isCompleted", "getTodos"]),
+    showTodosFilter() {
+      switch (this.active) {
+        case "active":
+          return this.isActive;
+        case "completed":
+          return this.isCompleted;
+        default:
+          return this.getTodos;
+      }
+    },
   },
-  async created() {
-     await this.showTodos()
-    //  location.reload()
-  },
-  // beforeDestroy () {
-  //   this.todosData =[]
-  // }
+  async mounted() {
+     await this.getApiTodos();
+  }
 };
 </script>
 
@@ -130,7 +110,7 @@ export default {
   text-align: center;
   padding: 60px 0;
   background-color: rgba(208, 104, 150, 0.1);
-  color :#d06896 ;
+  color: #d06896;
 }
 .add-todo {
   border: none;
@@ -142,7 +122,7 @@ export default {
 .todo-menu {
   color: #d06896;
   text-align: center;
-  margin:30px 0px
+  margin: 30px 0px;
 }
 .menu-item {
   margin: 0 5px;
@@ -161,11 +141,11 @@ export default {
 }
 .box-color {
   padding: 3px;
-  border-bottom : 3px solid #d06896;
+  border-bottom: 3px solid #d06896;
 }
 .message {
-  color : #6dabe4 ;
+  color: #6dabe4;
   text-align: center;
-  padding : 50px 0
+  padding: 50px 0;
 }
 </style>

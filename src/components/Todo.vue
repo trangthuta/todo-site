@@ -1,15 +1,14 @@
 <template>
   <div class="container">
-        <div class="todo-item">
+        <div class="todo-item" :class="{'status-completed' : check ==true}">
         <div class="todo-content" v-bind="textContent" >
           {{todo.title}}
         </div>
         <p class="todo-tit">{{formatTime(todo.createdAt)}}</p>
         <div class="todo-icon">
-          <!-- <p class="item-icon box-check" @click ='updateStatusCompleted(todo)'></p> -->
-          <input type="checkbox" class="item-icon" @click ='updateStatusCompleted(todo)'>
-          <i class="fa-solid fa-pen-to-square item-icon" @click="update(todo)" ></i>
-          <i class="fa-solid fa-trash item-icon" @click="deleteChildTodo(todo)"></i>
+          <input type="checkbox" class="item-icon"  disabled:disabled>
+          <i class="fa-solid fa-pen-to-square item-icon" ></i>
+          <i class="fa-solid fa-trash item-icon" @click="deleteTodoChild(todo.id)"></i>
         </div>
       </div>
   </div>
@@ -20,26 +19,24 @@ import { mapActions } from 'vuex'
 export default {
   name: "Todo",
   props: ['todo'],
+ 
   data() {
  return {
-   textContent : ''
+   textContent : '',
+   check : true
  }
   },
   methods : {
-    ...mapActions(['updateTodo']),
+    ...mapActions(['updateTodo' ,'deleTodo']),
     formatTime(e) {
       const date =new Date(e).toLocaleDateString('vi-VI')
       const time =new Date(e).toLocaleTimeString('vi-VI')
       return `${date} - ${time}`
     },
-    deleteChildTodo(e) {
-      this.$emit('delete-todo-child', e)
-    },
-    updateStatusCompleted(e) {
-      this.$emit('update-status-completed ', e)
-      alert('vừa check!')
+    deleteTodoChild(id) {
+        this.deleTodo(id)
     }
- 
+  
      
   }
 
@@ -47,6 +44,12 @@ export default {
 </script>
 
 <style scoped>
+.status-completed {
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8); */
+  background-color: rgba(0, 0, 0, 0.1);
+  text-decoration: line-through;
+  
+}
 .box-check {
   width : 15px;
   height: 15px;
@@ -60,8 +63,10 @@ export default {
   border: 2px solid #6dabe4;
   border-radius: 20px;
   padding: 10px 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
 }
-/* .todo-item:hover {
+.todo-item:hover {
    transform: scale(1.1);
    border: 1px solid red;
    transition: all 1s;
@@ -71,7 +76,7 @@ export default {
 }
 .todo-item:hover .todo-icon {
   color:red
-} */
+}
 .todo-tit {
   color:#d06896;
   text-align: right;

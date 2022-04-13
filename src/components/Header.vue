@@ -6,10 +6,10 @@
           Todo<span class="logo-before" style="color: #d06896">Site</span>
         </h1>
 
-        <p class="button-log-out" v-if="isLoggedIn"  @click="logOutEvent()">
-          <span class="wellcome-user"> Hi , {{this.getUsername}} <i class="fa-solid fa-user"></i></span>Logout
-
-          <span>
+        <p class="button-log-out" v-if="!!isLoggedIn">
+          <router-link to='/homepage' class="wellcome-user"> Hi , {{this.getUsername}} <i class="fa-solid fa-user"></i></router-link>
+          <span @click="logOutEvent()">
+            Logout
             <i class="fa-solid fa-right-from-bracket"></i>
           </span>
         </p>
@@ -51,8 +51,12 @@ h1 {
 .logo-before {
   font-weight: 100;
 }
-.button-log-out {
+.button-log-out  {
   cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: #6dabe4;
 }
 .wellcome-user {
    border-right:  2px solid #d06896;
