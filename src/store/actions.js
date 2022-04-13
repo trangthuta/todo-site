@@ -28,9 +28,6 @@ export default {
     localStorage.removeItem("token")
     localStorage.removeItem("id")
     localStorage.removeItem("username")
-    commit('setTodos' , {
-      todos : []
-    })
     commit("setUser", {
       token: null,
       id: null,
@@ -58,47 +55,22 @@ export default {
         limit: 1000000,
       },
     });
-    let todosResponse = response.data.items;
-    
-    let todoArrays = [];
-    for (let i = 0; i <= todosResponse.length - 1; i++) {
-      let newObject = {
-        createdAt:todosResponse[i].createdAt ,
-        id: todosResponse[i].id,
-        title: todosResponse[i].title,
-        status: todosResponse[i].status,
-      }
-      todoArrays.push(newObject)
-    }
     commit("setTodos", {
-      todos : todoArrays
+      todos : response.data.items
     });
   },
   async addTodo({commit} ,payload) {
-    const data = await axios.post('/api/tasks' ,{
+    const response = await axios.post('/api/tasks' ,{
       title : payload
     })
-    console.log(data.data.items)
-    commit('setTodo',data.data.items)
+    commit('addTodos',response.data);
   } ,
-
-  async updateTodo({commit} , payload) {
-    const  data = await axios.patch(`/api/tasks/${payload.id}`,{
-     title : payload.title,
-     status : payload.status,
-    })
-    commit('setTodo',data.data.items)
-  },
-  async deleTodo({commit} , payload) {
-    const  data = await axios.delete(`/api/tasks/${payload.id}`)
-    commit('setTodo',data.data.items)
+  
+  async deleTodo({commit} , id) {
+     await axios.delete(`/api/tasks/${id}`)
+    commit('deleteTodo',id)
   } ,
-  async updateTodoCompleted({commit} , payload) {
-    const  data = await axios.put(`/api/tasks/${payload.id}` , {
-      status : 'COMPLETED',
-    })
-    commit('setTodo',data.data.items)
-  }
+  
 };
 
 
