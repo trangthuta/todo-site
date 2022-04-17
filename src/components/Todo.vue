@@ -5,13 +5,9 @@
       :class="{ 'status-completed': todo.status == 'COMPLETED' }"
     >  
       <input class="todo-content" contenteditable="true" v-model=" text " 
-      @change="updateTodoChild(todo)"
+      @blur="updateTodoChild(todo)"
       />
       <p class="todo-tit">{{ formatTime(todo.createdAt) }}</p>
-       <div class="update" v-if="mode == 'update'">
-        <button class="btn-todo" @click="updateTodoChild(todo)">Update</button>
-        <button class="btn-todo" @click="cancelUpdate()">Cancel</button>
-      </div>
       <div class="todo-icon">
         <input
           type="checkbox"
@@ -19,9 +15,6 @@
           disabled:disabled
           @change="markCompleted(todo)"
         />
-          <!-- <router-link to="/homepage/todos/:id"> -->
-          <i class="fa-solid fa-pen-to-square item-icon" @click="(turnOnModeUpdate(todo.id))"></i>
-          <!-- </router-link> -->
         <i
           class="fa-solid fa-trash item-icon"
           @click="deleteTodoChild(todo.id)"
@@ -56,12 +49,6 @@ export default {
   },
   methods: {
     ...mapActions(["updateTodo", "deleTodo"]),
-     turnOnModeUpdate(id) {
-       this.mode = 'update'
-       this.selectedTodo = id
-       console.log(this.selectedTodo)
-       
-    },
     formatTime(e) {
       const date = new Date(e).toLocaleDateString("vi-VI");
       const time = new Date(e).toLocaleTimeString("vi-VI");
@@ -83,7 +70,7 @@ export default {
     updateTodoChild(todo) {
       this.text = this.text.trim()
       const data = this.text.trim()
-      if(this.todo.title === this.text || this.text === '') {
+      if(this.text === '') {
         this.text= this.todo.title  
         alert("Bạn chưa sửa nội dung")
       }
