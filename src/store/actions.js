@@ -28,11 +28,12 @@ export default {
     localStorage.removeItem("token")
     localStorage.removeItem("id")
     localStorage.removeItem("username")
-    commit("setUser", {
-      token: null,
-      id: null,
-      username : null,
-    })
+    const data = {
+      token : null ,
+      id : null,
+      username : null ,
+    }
+    commit("setUser",data)
   },
   tryLogin({ commit }) {
     const token = localStorage.getItem("token");
@@ -70,7 +71,19 @@ export default {
      await axios.delete(`/api/tasks/${id}`)
     commit('deleteTodo',id)
   } ,
-  
+
+  async updateTodo({
+    commit
+}, data) {
+
+    const response = await axios.patch(`/api/tasks/${data.id}`,
+    {
+      title: data.title,
+      status: data.status,
+  }
+    )
+    commit('updateTodo', response.data)
+}, 
 };
 
 

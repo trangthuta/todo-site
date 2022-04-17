@@ -12,5 +12,11 @@ export default {
 },
  deleteTodo(state, id) {
   state.todos = state.todos.filter(t => t.id !== id);
-}
+},
+updateTodo(state, updatedTodo) {
+  const index = state.todos.findIndex(t => t.id === updatedTodo.id);
+  if (index !== -1) {
+      state.todos.splice(index, 1, updatedTodo);
+  }
+},
 };
