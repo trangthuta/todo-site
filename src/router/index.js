@@ -21,6 +21,8 @@ const routes = [
     name: 'Todo',
     component: () => import( '../components/Todo.vue')
   },
+  
+
 
 ]
 
